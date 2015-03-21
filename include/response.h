@@ -1,24 +1,36 @@
 #include <string>
+#include <sstream>
+#include <unordered_map>
 
 namespace http {
     class response {
     protected:
-        int _status_code;
-        std::string _status_message;
-        std::string _body;
+        int _status_code = 200;
+        std::string _status_message = "OK";
+        std::string _body = "";
+        std::unordered_map<std::string, std::string> _headers;
     public:
-        void status(int code) {
-            _status_code = code;
-            _status_message = "";
-        }
-
         void status(int code, std::string message) {
             _status_code = code;
             _status_message = message;
         }
 
-        void send(std::string body) {
+        void body(std::string body) {
             _body = body;
+        }
+
+        void header(std::string name, std::string value) {
+            _headers[name] = value;
+        }
+
+        std::string to_string() {
+            std::ostringstream result;
+            result << "HTTP/1.0 " << _status_code << " " << _status_message << "\r\n";
+            for (auto it : _headers) {
+                result << it.first << ": " << it.second << "\n";
+            }
+            result << "\r\n" << _body;
+            return result.str();
         }
     };
 }
