@@ -16,7 +16,7 @@ namespace http {
     public:
         typedef std::function<void(request &, response &)> server_callback_t;
     private:
-        std::string _recive(const int &sock, const size_t buffer_length = 1024) {
+        std::string _receive(const int &sock, const size_t buffer_length = 1024) {
             std::string result;
             char buffer[buffer_length];
             long len;
@@ -110,7 +110,7 @@ namespace http {
                             throw std::runtime_error(strerror(errno));
                         }
 
-                        request req(_recive(client));
+                        request req(_receive(client));
                         response res;
                         _callback(req, res);
                         _send(client, res.to_string());
