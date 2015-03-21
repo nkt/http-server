@@ -27,7 +27,7 @@ namespace http {
             std::ostringstream result;
             result << "HTTP/1.0 " << _status_code << " " << _status_message << "\r\n";
             for (auto it : _headers) {
-                result << it.first << ": " << it.second << "\n";
+                result << it.first << ": " << it.second << "\r\n";
             }
             result << "\r\n" << _body;
             return result.str();

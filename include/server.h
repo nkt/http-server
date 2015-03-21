@@ -21,10 +21,10 @@ namespace http {
             char buffer[buffer_length];
             long len;
             do {
-                memset(&buffer, 0, buffer_length);
+                ::memset(&buffer, 0, buffer_length);
                 len = ::recv(sock, &buffer, buffer_length, 0);
                 if (len == -1) {
-                    throw std::runtime_error(strerror(errno));
+                    throw std::runtime_error(::strerror(errno));
                 }
                 result += buffer;
                 if (len < buffer_length) {
@@ -43,7 +43,7 @@ namespace http {
                 if (sent_length == 0) {
                     return;
                 } else if (sent_length == -1) {
-                    throw std::runtime_error(strerror(errno));
+                    throw std::runtime_error(::strerror(errno));
                 }
                 bytes += sent_length;
                 length -= sent_length;
@@ -58,27 +58,27 @@ namespace http {
         server(const int &port) {
             _listener = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
             if (_listener == -1) {
-                throw std::runtime_error(strerror(errno));
+                throw std::runtime_error(::strerror(errno));
             }
 
             sockaddr_in address;
-            memset(&address, 0, sizeof(address));
+            ::memset(&address, 0, sizeof(address));
             address.sin_family = AF_INET;
             address.sin_addr.s_addr = INADDR_ANY;
             address.sin_port = htons(port);
 
             if (::bind(_listener, (sockaddr *) &address, sizeof(address)) == -1) {
-                throw std::runtime_error(strerror(errno));
+                throw std::runtime_error(::strerror(errno));
             }
 
             int optvalue = 1;
             int optlength = sizeof(optvalue);
             if (::setsockopt(_listener, SOL_SOCKET, SO_REUSEADDR, &optvalue, optlength) == -1) {
-                throw std::runtime_error(strerror(errno));
+                throw std::runtime_error(::strerror(errno));
             }
 
             if (::listen(_listener, SOMAXCONN) == -1) {
-                throw std::runtime_error(strerror(errno));
+                throw std::runtime_error(::strerror(errno));
             }
         }
 
@@ -107,7 +107,7 @@ namespace http {
                         socklen_t in_len = sizeof(sockaddr);
                         int client = ::accept(_listener, &in_addr, &in_len);
                         if (client == -1) {
-                            throw std::runtime_error(strerror(errno));
+                            throw std::runtime_error(::strerror(errno));
                         }
 
                         request req(_receive(client));
@@ -116,7 +116,7 @@ namespace http {
                         _send(client, res.to_string());
 
                         if (close(client) == -1) {
-                            throw std::runtime_error(strerror(errno));
+                            throw std::runtime_error(::strerror(errno));
                         }
                     }
                 });
