@@ -19,7 +19,10 @@ namespace http {
         std::string _recive(const int &sock, const size_t buffer_length = 1024) {
             std::string result;
             char buffer[buffer_length];
-            for (long len = 1; len > 0; len = ::recv(sock, &buffer, buffer_length, 0)) {
+            long len;
+            do {
+                memset(&buffer, 0, buffer_length);
+                len = ::recv(sock, &buffer, buffer_length, 0);
                 if (len == -1) {
                     throw std::runtime_error(strerror(errno));
                 }
@@ -27,16 +30,16 @@ namespace http {
                 if (len < buffer_length) {
                     break;
                 }
-            }
+            } while (len > 0);
 
             return result;
         }
 
         void _send(const int &sock, const std::string &message) {
-            size_t length = message.length();
+            long length = message.length();
             const char *bytes = message.c_str();
             while (length > 0) {
-                ssize_t sent_length = ::send(sock, bytes, length, 0);
+                long sent_length = ::send(sock, bytes, length, 0);
                 if (sent_length == 0) {
                     return;
                 } else if (sent_length == -1) {
