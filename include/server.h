@@ -3,6 +3,7 @@
 #include <stack>
 #include <thread>
 #include <vector>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
