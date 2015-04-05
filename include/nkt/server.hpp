@@ -40,13 +40,12 @@ namespace http {
             long length = message.length();
             const char *bytes = message.c_str();
             while (length > 0) {
-                long sent_length = ::send(sock, bytes, length, 0);
+                long sent_length = ::send(sock, &bytes[sent_length], length, 0);
                 if (sent_length == 0) {
                     return;
                 } else if (sent_length == -1) {
                     throw std::runtime_error(::strerror(errno));
                 }
-                bytes += sent_length;
                 length -= sent_length;
             }
         }

@@ -2,11 +2,14 @@
 
 namespace http {
     class request {
-    private:
+    protected:
         std::string _raw;
     public:
         request(const std::string &raw) {
             _raw = raw;
+            for (size_t i = 0, len = raw.length(); i < len; i++) {
+
+            }
         }
 
         const std::string &raw() {
